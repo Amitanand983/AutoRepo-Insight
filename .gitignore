@@ -1,0 +1,41 @@
+# Auto-generated .gitignore for AutoRepo Insight (Python + React)
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+backend_env/
+.env
+.env.*
+*.egg-info/
+dist/
+build/
+.ipynb_checkpoints/
+
+# Node.js / React / Vite
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.*
+*.log
+
+# macOS
+.DS_Store
+
+# General
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/ 
