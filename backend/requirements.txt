@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+PyGithub
+gitpython
+pipreqs
+pdoc
+flake8
+radon
+pylint
+python-multipart 
