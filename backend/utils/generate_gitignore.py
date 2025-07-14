@@ -1,84 +1,57 @@
 import os
 from collections import Counter
 
-def detect_stack(repo_path):
-    exts = []
-    folders = set()
+def detect_stacks(repo_path):
+    indicators = {
+        "python": {"exts": {".py", ".egg-info"}, "folders": {"__pycache__", ".venv", "venv"}, "files": set()},
+        "jupyter": {"exts": {".ipynb"}, "folders": {".ipynb_checkpoints"}, "files": set()},
+        "node": {"exts": {".js"}, "folders": {"node_modules"}, "files": {"package.json"}},
+        "react": {"exts": {".jsx", ".tsx"}, "folders": {"src", "public"}, "files": set()},
+        "java": {"exts": {".java"}, "folders": set(), "files": {"pom.xml"}},
+        "cpp": {"exts": {".cpp", ".h"}, "folders": set(), "files": {"Makefile", "CMakeLists.txt"}},
+    }
+    found = set()
     for root, dirs, files in os.walk(repo_path):
-        for d in dirs:
-            folders.add(d.lower())
-        for f in files:
-            ext = os.path.splitext(f)[1].lower()
-            if ext:
-                exts.append(ext)
-    ext_counts = Counter(exts)
-    # Heuristic: most common extension
-    if ext_counts:
-        main_ext = ext_counts.most_common(1)[0][0]
-        if main_ext == ".py" or "__pycache__" in folders or ".venv" in folders:
-            return "python"
-        if main_ext == ".js" or "node_modules" in folders:
-            return "node"
-        if main_ext == ".ipynb":
-            return "python-jupyter"
-        if main_ext == ".ts":
-            return "node-typescript"
-    return None
+        for lang, keys in indicators.items():
+            # Extensions
+            for f in files:
+                ext = os.path.splitext(f)[1].lower()
+                if ext in keys["exts"]:
+                    found.add(lang)
+                if f in keys["files"]:
+                    found.add(lang)
+            # Folders
+            for d in dirs:
+                if d.lower() in keys["folders"]:
+                    found.add(lang)
+    # Special: if both python and jupyter, keep both
+    return sorted(found)
 
 GITIGNORE_TEMPLATES = {
-    "python": """# Python
-__pycache__/
-*.py[cod]
-*.so
-.venv/
-.env
-.env.*
-*.egg-info/
-dist/
-build/
-.ipynb_checkpoints/
-""",
-    "python-jupyter": """# Python + Jupyter
-__pycache__/
-*.py[cod]
-*.so
-.venv/
-.env
-.env.*
-*.egg-info/
-dist/
-build/
-.ipynb_checkpoints/
-*.ipynb
-""",
-    "node": """# Node
-node_modules/
-dist/
-build/
-.env
-.env.*
-.npm/
-.cache/
-*.log
-""",
-    "node-typescript": """# Node + TypeScript
-node_modules/
-dist/
-build/
-.env
-.env.*
-.npm/
-.cache/
-*.log
-*.tsbuildinfo
-"""
+    "python": """# Python\n__pycache__/\n*.py[cod]\n*.so\n.venv/\n.env\n.env.*\n*.egg-info/\ndist/\nbuild/\n.ipynb_checkpoints/\n""",
+    "jupyter": """# Jupyter\n.ipynb_checkpoints/\n*.ipynb\n""",
+    "node": """# Node.js\nnode_modules/\ndist/\nbuild/\n.env\n.env.*\n.npm/\n.cache/\n*.log\n""",
+    "react": """# React\nbuild/\ndist/\nnode_modules/\n.env\n.env.*\n*.log\n""",
+    "java": """# Java\n*.class\n*.jar\n*.war\n*.ear\n*.iml\n*.log\ntarget/\nbin/\n*.project\n*.classpath\n.settings/\n.idea/\n""",
+    "cpp": """# C++\n*.o\n*.obj\n*.so\n*.exe\n*.out\nCMakeFiles/\nCMakeCache.txt\nMakefile\ncmake_install.cmake\nbuild/\n"""
 }
+
+GENERIC_TEMPLATE = """# General\n.DS_Store\nThumbs.db\n*.swp\n*.swo\n*.bak\n*.tmp\n.env\n.env.*\n"""
 
 def generate_gitignore(repo_path: str) -> str:
     """
-    Generate a .gitignore string based on detected stack/language.
+    Generate a .gitignore string based on detected stack/language(s).
+    Combines templates and adds a summary comment.
     """
-    stack = detect_stack(repo_path)
-    if stack and stack in GITIGNORE_TEMPLATES:
-        return GITIGNORE_TEMPLATES[stack]
-    return "# No suitable .gitignore template found. Please customize as needed." 
+    stacks = detect_stacks(repo_path)
+    sections = []
+    if stacks:
+        for stack in stacks:
+            template = GITIGNORE_TEMPLATES.get(stack)
+            if template:
+                sections.append(template.strip())
+        summary = f"# Auto-generated based on detected languages: {', '.join(s.capitalize() for s in stacks)}\n"
+        result = summary + "\n\n".join(sections)
+    else:
+        result = "# Auto-generated generic .gitignore\n" + GENERIC_TEMPLATE
+    return result.strip() 

@@ -1,6 +1,7 @@
 import os
 import textwrap
 from collections import Counter
+import ast
 
 def detect_license(repo_path):
     license_path = os.path.join(repo_path, "LICENSE")
@@ -12,11 +13,11 @@ def detect_license(repo_path):
 
 def get_folder_tree(repo_path, max_depth=2):
     tree = []
-    prefix = ""
+    exclude = {'.git', '__pycache__', 'venv', '.venv', '.ipynb_checkpoints'}
     def walk(dir_path, depth, prefix):
         if depth > max_depth:
             return
-        entries = sorted(os.listdir(dir_path))
+        entries = [e for e in sorted(os.listdir(dir_path)) if e not in exclude]
         for i, entry in enumerate(entries):
             path = os.path.join(dir_path, entry)
             connector = "└── " if i == len(entries) - 1 else "├── "
@@ -34,15 +35,30 @@ def detect_main_script(repo_path):
                 return rel_path
     return None
 
+def extract_module_docstring(repo_path):
+    for fname in ["main.py", "app.py"]:
+        for root, dirs, files in os.walk(repo_path):
+            if fname in files:
+                file_path = os.path.join(root, fname)
+                try:
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        node = ast.parse(f.read())
+                        docstring = ast.get_docstring(node)
+                        if docstring:
+                            return docstring
+                except Exception:
+                    continue
+    return None
+
 def count_files_and_languages(repo_path):
     exts = []
     total = 0
     for root, dirs, files in os.walk(repo_path):
         for f in files:
-            total += 1
             ext = os.path.splitext(f)[1].lower()
             if ext:
                 exts.append(ext)
+            total += 1
     lang_map = {".py": "Python", ".js": "JavaScript", ".ts": "TypeScript", ".md": "Markdown", ".json": "JSON"}
     lang_counts = Counter([lang_map.get(e, e) for e in exts])
     return total, lang_counts
@@ -62,21 +78,23 @@ def get_project_name(repo_path):
 def generate_readme(repo_path: str) -> str:
     """
     Generate a professional README.md for the given repo path.
+    If a README.md exists, use it as a base and append extra sections.
     """
+    readme_path = os.path.join(repo_path, "README.md")
+    base_readme = None
+    if os.path.exists(readme_path):
+        with open(readme_path, "r", encoding="utf-8") as f:
+            base_readme = f.read().strip()
+
     project_name = get_project_name(repo_path)
     folder_tree = get_folder_tree(repo_path)
     main_script = detect_main_script(repo_path)
     total_files, lang_counts = count_files_and_languages(repo_path)
     license_info = detect_license(repo_path)
-    # Placeholder for GPT description
-    description = "No description found. (Future: Use GPT to summarize)"
+    docstring = extract_module_docstring(repo_path)
+    description = docstring or "No description found. (Future: Use GPT to summarize)"
 
-    readme = textwrap.dedent(f"""
-    # 📌 {project_name}
-
-    ## 📄 Description
-    {description}
-
+    extra_sections = textwrap.dedent(f"""
     ## ⚙️ Installation
     ```bash
     pip install -r requirements.txt
@@ -97,9 +115,25 @@ def generate_readme(repo_path: str) -> str:
     - Total files: {total_files}
     - Languages: {', '.join(f'{k} ({v})' for k, v in lang_counts.items()) or 'Unknown'}
 
+    ## 🗂️ Detected Main File
+    {main_script or 'Not detected'}
+
     ## 🙌 Contributing / Contact
     Pull requests welcome! For major changes, please open an issue first.
     
     Contact: [maintainer](mailto:email@example.com)
     """)
-    return readme.strip() 
+
+    if base_readme:
+        # Try to preserve user-provided description, append extra sections
+        return f"{base_readme}\n\n---\n\n{extra_sections.strip()}"
+    else:
+        # Compose a new README from scratch
+        return textwrap.dedent(f"""
+        # 📌 {project_name}
+
+        ## 📄 Description
+        {description}
+
+        {extra_sections}
+        """).strip() 
