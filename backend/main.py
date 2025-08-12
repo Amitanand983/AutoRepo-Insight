@@ -45,4 +45,4 @@ async def analyze_repo(request: AnalyzeRequest):
             "gitignore": gitignore
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) 
+        raise HTTPException(status_code=500, detail=str(e))
