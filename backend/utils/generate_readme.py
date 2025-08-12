@@ -38,9 +38,9 @@ def detect_license(repo_path):
     return "No license detected."
 
 def get_folder_tree(repo_path, max_depth=3):
-    """Enhanced folder tree with file counts and better formatting."""
+    """Enhanced folder tree with file counts, better formatting, and intelligent organization."""
     tree = []
-    exclude = {'.git', '__pycache__', 'venv', '.venv', '.ipynb_checkpoints', 'node_modules', 'dist', 'build', '.pytest_cache'}
+    exclude = {'.git', '__pycache__', 'venv', '.venv', '.ipynb_checkpoints', 'node_modules', 'dist', 'build', '.pytest_cache', '.mypy_cache', '.coverage', '.tox'}
     
     def count_files_in_dir(dir_path):
         count = 0
@@ -48,44 +48,119 @@ def get_folder_tree(repo_path, max_depth=3):
             count += len(files)
         return count
     
+    def get_directory_priority(dir_name):
+        """Return priority for directory ordering (important dirs first)."""
+        priorities = {
+            'src': 1, 'app': 1, 'main': 1, 'core': 1,
+            'tests': 2, 'test': 2, 'specs': 2,
+            'docs': 3, 'documentation': 3,
+            'examples': 4, 'samples': 4,
+            'scripts': 5, 'tools': 5, 'utils': 5,
+            'config': 6, 'settings': 6,
+            'assets': 7, 'static': 7, 'media': 7,
+            'data': 8, 'models': 8
+        }
+        return priorities.get(dir_name.lower(), 10)
+    
     def walk(dir_path, depth, prefix):
         if depth > max_depth:
             return
         entries = [e for e in sorted(os.listdir(dir_path)) if e not in exclude]
-        for i, entry in enumerate(entries):
+        
+        # Sort directories by priority, then files alphabetically
+        dirs = []
+        files = []
+        for entry in entries:
             path = os.path.join(dir_path, entry)
-            connector = "└── " if i == len(entries) - 1 else "├── "
-            
             if os.path.isdir(path):
-                file_count = count_files_in_dir(path)
-                tree.append(f"{prefix}{connector}📁 {entry}/ ({file_count} files)")
-                walk(path, depth + 1, prefix + ("    " if i == len(entries) - 1 else "│   "))
+                dirs.append((entry, get_directory_priority(entry)))
             else:
-                # Add file type icons
+                files.append(entry)
+        
+        # Sort directories by priority, then alphabetically
+        dirs.sort(key=lambda x: (x[1], x[0]))
+        files.sort()
+        
+        all_entries = [(name, True) for name, _ in dirs] + [(name, False) for name in files]
+        
+        for i, (entry, is_dir) in enumerate(all_entries):
+            path = os.path.join(dir_path, entry)
+            connector = "└── " if i == len(all_entries) - 1 else "├── "
+            
+            if is_dir:
+                file_count = count_files_in_dir(path)
+                tree.append(f"{prefix}{connector}📁 **{entry}/** ({file_count} files)")
+                walk(path, depth + 1, prefix + ("    " if i == len(all_entries) - 1 else "│   "))
+            else:
+                # Add file type icons and better formatting
                 ext = os.path.splitext(entry)[1].lower()
                 icon = get_file_icon(ext)
-                tree.append(f"{prefix}{connector}{icon} {entry}")
+                tree.append(f"{prefix}{connector}{icon} `{entry}`")
     
     walk(repo_path, 1, "")
     return "\n".join(tree)
 
 def get_file_icon(ext):
-    """Get appropriate icon for file types."""
+    """Get appropriate icon for file types with enhanced coverage."""
     icon_map = {
+        # Programming Languages
         '.py': '🐍', '.js': '📜', '.ts': '📘', '.jsx': '⚛️', '.tsx': '⚛️',
-        '.md': '📝', '.json': '📋', '.yml': '⚙️', '.yaml': '⚙️',
-        '.html': '🌐', '.css': '🎨', '.scss': '🎨', '.sql': '🗄️',
-        '.java': '☕', '.cpp': '⚡', '.c': '⚡', '.h': '📋',
-        '.txt': '📄', '.log': '📋', '.sh': '🐚', '.bat': '🪟',
-        '.gitignore': '🛡️', '.env': '🔐', '.dockerfile': '🐳'
+        '.java': '☕', '.cpp': '⚡', '.c': '⚡', '.h': '📋', '.cs': '🔷',
+        '.go': '🐹', '.rs': '🦀', '.php': '🐘', '.rb': '💎', '.swift': '🍎',
+        '.kt': '🔵', '.scala': '🔴', '.dart': '💙', '.lua': '🌙',
+        
+        # Web Technologies
+        '.html': '🌐', '.css': '🎨', '.scss': '🎨', '.sass': '🎨', '.less': '🎨',
+        '.vue': '💚', '.svelte': '🟠', '.elm': '🟢',
+        
+        # Data & Config
+        '.json': '📋', '.xml': '📄', '.yaml': '⚙️', '.yml': '⚙️', '.toml': '⚙️',
+        '.sql': '🗄️', '.db': '🗄️', '.sqlite': '🗄️',
+        
+        # Documentation
+        '.md': '📝', '.rst': '📚', '.txt': '📄', '.pdf': '📕',
+        
+        # Build & Config
+        '.gitignore': '🛡️', '.env': '🔐', '.dockerfile': '🐳', '.dockerignore': '🐳',
+        '.makefile': '🔨', '.cmake': '🔨', '.gradle': '🔨', '.maven': '🔨',
+        
+        # Scripts
+        '.sh': '🐚', '.bat': '🪟', '.ps1': '🪟', '.zsh': '🐚', '.fish': '🐚',
+        
+        # Archives
+        '.zip': '📦', '.tar': '📦', '.gz': '📦', '.rar': '📦',
+        
+        # Images
+        '.png': '🖼️', '.jpg': '🖼️', '.jpeg': '🖼️', '.gif': '🖼️', '.svg': '🖼️',
+        '.ico': '🖼️', '.webp': '🖼️'
     }
     return icon_map.get(ext, '📄')
 
 def detect_main_script(repo_path):
-    """Enhanced main script detection with multiple patterns."""
+    """Enhanced main script detection with multiple patterns and intelligent analysis."""
     main_patterns = [
-        "main.py", "app.py", "index.js", "index.ts", "server.py", "run.py",
-        "start.py", "manage.py", "wsgi.py", "asgi.py", "main.js", "app.js"
+        # Python
+        "main.py", "app.py", "server.py", "run.py", "start.py", "manage.py", 
+        "wsgi.py", "asgi.py", "cli.py", "bot.py", "bot.py",
+        
+        # Node.js
+        "index.js", "index.ts", "app.js", "app.ts", "server.js", "server.ts",
+        "main.js", "main.ts", "start.js", "start.ts",
+        
+        # Java
+        "Main.java", "Application.java", "App.java", "Server.java",
+        
+        # Go
+        "main.go", "server.go", "app.go",
+        
+        # Rust
+        "main.rs", "lib.rs",
+        
+        # PHP
+        "index.php", "app.php", "server.php",
+        
+        # Ruby
+        "app.rb", "main.rb", "server.rb"
     ]
     
     for pattern in main_patterns:
@@ -98,88 +173,147 @@ def detect_main_script(repo_path):
     for root, dirs, files in os.walk(repo_path):
         for file in files:
             if file.endswith('.py'):
-                file_path = os.path.join(root, file)
                 try:
-                    with open(file_path, "r", encoding="utf-8") as f:
+                    with open(os.path.join(root, file), 'r', encoding='utf-8') as f:
                         content = f.read()
-                        if "if __name__ == '__main__'" in content or "def main(" in content:
-                            rel_path = os.path.relpath(file_path, repo_path)
+                        if 'if __name__ == "__main__"' in content or 'def main(' in content:
+                            rel_path = os.path.relpath(os.path.join(root, file), repo_path)
                             return rel_path
                 except Exception:
                     continue
-    return None
-
-def extract_module_docstring(repo_path):
-    """Enhanced docstring extraction with fallback to file content analysis."""
-    for fname in ["main.py", "app.py", "README.md", "index.js"]:
-        for root, dirs, files in os.walk(repo_path):
-            if fname in files:
-                file_path = os.path.join(root, fname)
-                try:
-                    if fname.endswith('.py'):
-                        with open(file_path, "r", encoding="utf-8") as f:
-                            node = ast.parse(f.read())
-                            docstring = ast.get_docstring(node)
-                            if docstring:
-                                return docstring
-                    elif fname.endswith('.md'):
-                        with open(file_path, "r", encoding="utf-8") as f:
-                            content = f.read()
-                            # Extract first paragraph after title
-                            lines = content.split('\n')
-                            for i, line in enumerate(lines):
-                                if line.startswith('#') and i + 1 < len(lines):
-                                    next_line = lines[i + 1].strip()
-                                    if next_line and not next_line.startswith('#'):
-                                        return next_line
-                except Exception:
-                    continue
+    
     return None
 
 def count_files_and_languages(repo_path):
-    """Enhanced file counting with more language detection and file size analysis."""
-    exts = []
-    total = 0
+    """Enhanced file counting with better language detection and categorization."""
+    total_files = 0
+    lang_counts = Counter()
     total_size = 0
-    file_sizes = {}
+    file_sizes = []
+    exclude = {'.git', '__pycache__', 'venv', '.venv', 'node_modules', 'dist', 'build'}
     
-    for root, dirs, files in os.walk(repo_path):
-        for f in files:
-            file_path = os.path.join(root, f)
-            ext = os.path.splitext(f)[1].lower()
-            if ext:
-                exts.append(ext)
-                try:
-                    size = os.path.getsize(file_path)
-                    total_size += size
-                    if ext not in file_sizes:
-                        file_sizes[ext] = 0
-                    file_sizes[ext] += size
-                except Exception:
-                    pass
-            total += 1
-    
-    # Enhanced language mapping
-    lang_map = {
-        ".py": "Python", ".js": "JavaScript", ".ts": "TypeScript", 
-        ".jsx": "React JSX", ".tsx": "React TSX", ".md": "Markdown", 
-        ".json": "JSON", ".yml": "YAML", ".yaml": "YAML",
-        ".html": "HTML", ".css": "CSS", ".scss": "SCSS", ".sql": "SQL",
-        ".java": "Java", ".cpp": "C++", ".c": "C", ".h": "C Header",
-        ".sh": "Shell", ".bat": "Batch", ".ps1": "PowerShell",
-        ".php": "PHP", ".rb": "Ruby", ".go": "Go", ".rs": "Rust",
-        ".swift": "Swift", ".kt": "Kotlin", ".scala": "Scala"
+    # Enhanced language detection with framework identification
+    language_patterns = {
+        'Python': ['.py', '.pyx', '.pyi', '.pyw'],
+        'JavaScript': ['.js', '.mjs'],
+        'TypeScript': ['.ts', '.tsx'],
+        'React': ['.jsx', '.tsx'],
+        'Vue': ['.vue'],
+        'Svelte': ['.svelte'],
+        'HTML': ['.html', '.htm'],
+        'CSS': ['.css', '.scss', '.sass', '.less'],
+        'Java': ['.java', '.class'],
+        'C++': ['.cpp', '.cc', '.cxx', '.hpp', '.h'],
+        'C': ['.c', '.h'],
+        'Go': ['.go'],
+        'Rust': ['.rs'],
+        'PHP': ['.php'],
+        'Ruby': ['.rb'],
+        'Swift': ['.swift'],
+        'Kotlin': ['.kt', '.kts'],
+        'Scala': ['.scala'],
+        'Dart': ['.dart'],
+        'Lua': ['.lua'],
+        'Shell': ['.sh', '.bash', '.zsh', '.fish'],
+        'Batch': ['.bat', '.cmd'],
+        'PowerShell': ['.ps1'],
+        'SQL': ['.sql'],
+        'Markdown': ['.md', '.markdown'],
+        'YAML': ['.yml', '.yaml'],
+        'JSON': ['.json'],
+        'XML': ['.xml'],
+        'TOML': ['.toml'],
+        'INI': ['.ini', '.cfg', '.conf'],
+        'Docker': ['.dockerfile', '.dockerignore'],
+        'Makefile': ['makefile', 'makefile.am', 'makefile.in'],
+        'CMake': ['cmakelists.txt', '.cmake'],
+        'Gradle': ['.gradle'],
+        'Maven': ['pom.xml'],
+        'Cargo': ['cargo.toml'],
+        'Package': ['package.json', 'package-lock.json', 'yarn.lock'],
+        'Requirements': ['requirements.txt', 'requirements-dev.txt', 'pyproject.toml', 'setup.py', 'setup.cfg'],
+        'Go Modules': ['go.mod', 'go.sum'],
+        'Pipenv': ['pipfile', 'pipfile.lock'],
+        'Poetry': ['pyproject.toml', 'poetry.lock']
     }
     
-    lang_counts = Counter([lang_map.get(e, e) for e in exts])
+    for root, dirs, files in os.walk(repo_path):
+        # Skip excluded directories
+        dirs[:] = [d for d in dirs if d not in exclude]
+        
+        for file in files:
+            if not file.startswith('.'):
+                total_files += 1
+                file_path = os.path.join(root, file)
+                
+                try:
+                    file_size = os.path.getsize(file_path)
+                    total_size += file_size
+                    file_sizes.append(file_size)
+                    
+                    # Detect language based on file extension
+                    ext = os.path.splitext(file)[1].lower()
+                    for lang, patterns in language_patterns.items():
+                        if ext in patterns or file.lower() in patterns:
+                            lang_counts[lang] += 1
+                            break
+                    else:
+                        # If no specific language found, categorize by extension
+                        if ext:
+                            lang_counts[f'Other ({ext})'] += 1
+                        else:
+                            lang_counts['Unknown'] += 1
+                            
+                except Exception:
+                    continue
     
-    # Calculate average file size
-    avg_size = total_size / total if total > 0 else 0
+    avg_size = total_size / total_files if total_files > 0 else 0
+    return total_files, lang_counts, total_size, avg_size, file_sizes
+
+def extract_module_docstring(repo_path):
+    """Extract module docstring from main Python files."""
+    docstrings = []
     
-    return total, lang_counts, total_size, avg_size, file_sizes
+    for root, dirs, files in os.walk(repo_path):
+        for file in files:
+            if file.endswith('.py') and not file.startswith('.'):
+                try:
+                    with open(os.path.join(root, file), 'r', encoding='utf-8') as f:
+                        content = f.read()
+                        # Look for module docstring
+                        match = re.search(r'"""(.*?)"""', content, re.DOTALL)
+                        if match:
+                            docstring = match.group(1).strip()
+                            if docstring and len(docstring) > 20:  # Only meaningful docstrings
+                                docstrings.append(docstring)
+                except Exception:
+                    continue
+    
+    # Return the best docstring (longest and most descriptive)
+    if docstrings:
+        return max(docstrings, key=len)
+    return None
 
 def get_project_name(repo_path):
-    """Enhanced project name detection with multiple sources."""
+    """Enhanced project name detection from multiple sources."""
+    # Try setup.py or pyproject.toml first
+    for config_file in ["setup.py", "pyproject.toml"]:
+        config_path = os.path.join(repo_path, config_file)
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                    if config_file == "setup.py":
+                        match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', content)
+                        if match:
+                            return match.group(1)
+                    elif config_file == "pyproject.toml":
+                        match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', content)
+                        if match:
+                            return match.group(1)
+            except Exception:
+                pass
+    
     # Try package.json for Node.js projects
     package_json = os.path.join(repo_path, "package.json")
     if os.path.exists(package_json):
@@ -188,18 +322,6 @@ def get_project_name(repo_path):
                 data = json.load(f)
                 if "name" in data:
                     return data["name"]
-        except Exception:
-            pass
-    
-    # Try setup.py for Python projects
-    setup_py = os.path.join(repo_path, "setup.py")
-    if os.path.exists(setup_py):
-        try:
-            with open(setup_py, "r", encoding="utf-8") as f:
-                content = f.read()
-                match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', content)
-                if match:
-                    return match.group(1)
         except Exception:
             pass
     
@@ -219,39 +341,55 @@ def get_project_name(repo_path):
     return os.path.basename(os.path.abspath(repo_path))
 
 def analyze_dependencies(repo_path):
-    """Analyze project dependencies and package managers."""
+    """Enhanced dependency analysis with multiple package managers and frameworks."""
     dependencies = {}
     
     # Python dependencies
-    requirements_files = ["requirements.txt", "requirements-dev.txt", "pyproject.toml", "setup.py"]
-    for req_file in requirements_files:
+    python_files = ["requirements.txt", "requirements-dev.txt", "pyproject.toml", "setup.py", "setup.cfg", "pipfile", "pipfile.lock"]
+    for req_file in python_files:
         req_path = os.path.join(repo_path, req_file)
         if os.path.exists(req_path):
-            dependencies["python"] = req_file
+            dependencies["Python"] = req_file
             break
     
     # Node.js dependencies
-    if os.path.exists(os.path.join(repo_path, "package.json")):
-        dependencies["nodejs"] = "package.json"
+    node_files = ["package.json", "package-lock.json", "yarn.lock", "pnpm-lock.yaml"]
+    for node_file in node_files:
+        if os.path.exists(os.path.join(repo_path, node_file)):
+            dependencies["Node.js"] = node_file
+            break
     
     # Java dependencies
-    if os.path.exists(os.path.join(repo_path, "pom.xml")):
-        dependencies["java"] = "pom.xml"
-    elif os.path.exists(os.path.join(repo_path, "build.gradle")):
-        dependencies["java"] = "build.gradle"
+    java_files = ["pom.xml", "build.gradle", "build.gradle.kts", "gradle.properties"]
+    for java_file in java_files:
+        if os.path.exists(os.path.join(repo_path, java_file)):
+            dependencies["Java"] = java_file
+            break
     
     # Go dependencies
     if os.path.exists(os.path.join(repo_path, "go.mod")):
-        dependencies["go"] = "go.mod"
+        dependencies["Go"] = "go.mod"
     
     # Rust dependencies
     if os.path.exists(os.path.join(repo_path, "Cargo.toml")):
-        dependencies["rust"] = "Cargo.toml"
+        dependencies["Rust"] = "Cargo.toml"
+    
+    # PHP dependencies
+    if os.path.exists(os.path.join(repo_path, "composer.json")):
+        dependencies["PHP"] = "composer.json"
+    
+    # Ruby dependencies
+    if os.path.exists(os.path.join(repo_path, "Gemfile")):
+        dependencies["Ruby"] = "Gemfile"
+    
+    # .NET dependencies
+    if os.path.exists(os.path.join(repo_path, "*.csproj")) or os.path.exists(os.path.join(repo_path, "*.sln")):
+        dependencies[".NET"] = "*.csproj/*.sln"
     
     return dependencies
 
 def get_git_info(repo_path):
-    """Extract Git repository information."""
+    """Extract comprehensive Git repository information."""
     git_info = {}
     
     try:
@@ -286,6 +424,14 @@ def get_git_info(repo_path):
         )
         if result.returncode == 0:
             git_info["remote"] = result.stdout.strip()
+        
+        # Get commit count
+        result = subprocess.run(
+            ["git", "rev-list", "--count", "HEAD"],
+            cwd=repo_path, capture_output=True, text=True
+        )
+        if result.returncode == 0:
+            git_info["commit_count"] = result.stdout.strip()
             
     except Exception:
         pass
@@ -293,7 +439,7 @@ def get_git_info(repo_path):
     return git_info
 
 def analyze_code_complexity(repo_path):
-    """Analyze code complexity and structure."""
+    """Enhanced code complexity analysis with better metrics."""
     complexity = {
         "total_lines": 0,
         "code_lines": 0,
@@ -301,33 +447,34 @@ def analyze_code_complexity(repo_path):
         "blank_lines": 0,
         "functions": 0,
         "classes": 0,
-        "imports": 0
+        "imports": 0,
+        "docstrings": 0
     }
     
     for root, dirs, files in os.walk(repo_path):
         for file in files:
-            if file.endswith(('.py', '.js', '.ts', '.jsx', '.tsx', '.java', '.cpp', '.c')):
-                file_path = os.path.join(root, file)
+            if file.endswith('.py') and not file.startswith('.'):
                 try:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        lines = f.readlines()
+                    with open(os.path.join(root, file), 'r', encoding='utf-8') as f:
+                        content = f.read()
+                        lines = content.split('\n')
+                        
                         complexity["total_lines"] += len(lines)
                         
                         for line in lines:
                             stripped = line.strip()
-                            if stripped.startswith('#') or stripped.startswith('//') or stripped.startswith('/*'):
+                            if stripped.startswith('#'):
                                 complexity["comment_lines"] += 1
                             elif stripped == '':
                                 complexity["blank_lines"] += 1
                             else:
                                 complexity["code_lines"] += 1
-                                
-                        # Count functions and classes (basic regex approach)
-                        content = ''.join(lines)
-                        complexity["functions"] += len(re.findall(r'def\s+\w+', content))
-                        complexity["functions"] += len(re.findall(r'function\s+\w+', content))
-                        complexity["classes"] += len(re.findall(r'class\s+\w+', content))
+                        
+                        # Count functions and classes
+                        complexity["functions"] += len(re.findall(r'^def\s+', content, re.MULTILINE))
+                        complexity["classes"] += len(re.findall(r'^class\s+', content, re.MULTILINE))
                         complexity["imports"] += len(re.findall(r'^import\s+|^from\s+', content, re.MULTILINE))
+                        complexity["docstrings"] += len(re.findall(r'""".*?"""', content, re.DOTALL))
                         
                 except Exception:
                     continue
@@ -337,7 +484,7 @@ def analyze_code_complexity(repo_path):
 def generate_readme(repo_path: str) -> str:
     """
     Generate a comprehensive professional README.md for the given repo path.
-    If a README.md exists, use it as a base and append extra sections.
+    Enhanced with better formatting, intelligent analysis, and professional structure.
     """
     readme_path = os.path.join(repo_path, "README.md")
     base_readme = None
@@ -356,7 +503,8 @@ def generate_readme(repo_path: str) -> str:
     git_info = get_git_info(repo_path)
     complexity = analyze_code_complexity(repo_path)
     
-    description = docstring or "No description found. (Future: Use GPT to summarize)"
+    # Enhanced description with fallback
+    description = docstring or f"A professional {', '.join(dependencies.keys() or ['Python'])} project with comprehensive documentation and analysis."
     
     # Format file sizes
     def format_size(size_bytes):
@@ -367,61 +515,109 @@ def generate_readme(repo_path: str) -> str:
         else:
             return f"{size_bytes / (1024 * 1024):.1f} MB"
     
-    # Enhanced extra sections
-    extra_sections = f"""## ⚙️ Installation
+    # Enhanced extra sections with better formatting
+    extra_sections = f"""## 🚀 Quick Start
+
+### 📋 Prerequisites
+- Python 3.8+ (if Python project)
+- Node.js 16+ (if Node.js project)
+- Git
+
+### ⚙️ Installation
 ```bash
-pip install -r requirements.txt
+# Clone the repository
+git clone <repository-url>
+cd {project_name}
+
+# Install dependencies
+{'pip install -r requirements.txt' if 'Python' in dependencies else 'npm install' if 'Node.js' in dependencies else 'See dependency files for installation instructions'}
 ```
 
-## 🚀 Usage
-{'python ' + main_script if main_script else 'See source code for entry point.'}
+### 🎯 Usage
+```bash
+{'python ' + main_script if main_script else 'See source code for entry point'}
+```
 
 ## 📁 Project Structure
 ```
 {folder_tree}
 ```
 
-## 📦 Dependencies
+## 🛠️ Technology Stack
 {chr(10).join([f"- **{tech}**: {file}" for tech, file in dependencies.items()]) if dependencies else "No dependency files detected."}
 
 ## 📊 Repository Statistics
-- **Total Files**: {total_files:,}
-- **Total Size**: {format_size(total_size)}
-- **Average File Size**: {format_size(int(avg_size))}
-- **Languages**: {', '.join(f'{k} ({v:,})' for k, v in lang_counts.items()) or 'Unknown'}
+| Metric | Value |
+|--------|-------|
+| **Total Files** | {total_files:,} |
+| **Total Size** | {format_size(total_size)} |
+| **Average File Size** | {format_size(int(avg_size))} |
+| **Languages** | {', '.join(f'{k} ({v:,})' for k, v in lang_counts.items()) or 'Unknown'} |
 
 ## 🔍 Code Analysis
-- **Total Lines**: {complexity['total_lines']:,}
-- **Code Lines**: {complexity['code_lines']:,}
-- **Comment Lines**: {complexity['comment_lines']:,}
-- **Functions**: {complexity['functions']:,}
-- **Classes**: {complexity['classes']:,}
-- **Imports**: {complexity['imports']:,}
+| Metric | Value |
+|--------|-------|
+| **Total Lines** | {complexity['total_lines']:,} |
+| **Code Lines** | {complexity['code_lines']:,} |
+| **Comment Lines** | {complexity['comment_lines']:,} |
+| **Functions** | {complexity['functions']:,} |
+| **Classes** | {complexity['classes']:,} |
+| **Imports** | {complexity['imports']:,} |
+| **Docstrings** | {complexity['docstrings']:,} |
 
-## 🗂️ Entry Point
+## 🎯 Entry Point
 {main_script or 'Not detected'}
 
 ## 📃 License
 {license_info}
 
-## 🔗 Repository Info
-{f"- **Branch**: {git_info.get('branch', 'Unknown')}" if git_info.get('branch') else ""}
-{f"- **Last Commit**: {git_info.get('last_commit', {}).get('hash', 'Unknown')} by {git_info.get('last_commit', {}).get('author', 'Unknown')}" if git_info.get('last_commit') else ""}
+## 🔗 Repository Information
+{f"- **Branch**: `{git_info.get('branch', 'Unknown')}`" if git_info.get('branch') else ""}
+{f"- **Last Commit**: `{git_info.get('last_commit', {}).get('hash', 'Unknown')}` by {git_info.get('last_commit', {}).get('author', 'Unknown')}" if git_info.get('last_commit') else ""}
+{f"- **Total Commits**: {git_info.get('commit_count', 'Unknown')}" if git_info.get('commit_count') else ""}
 {f"- **Remote**: {git_info.get('remote', 'Unknown')}" if git_info.get('remote') else ""}
 
-## 🙌 Contributing
-Pull requests welcome! For major changes, please open an issue first.
+## 🤝 Contributing
+We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-## 📞 Contact
-Contact: [maintainer](mailto:email@example.com)
+### Contribution Guidelines
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📞 Contact & Support
+- **Issues**: [GitHub Issues](https://github.com/username/{project_name}/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/username/{project_name}/discussions)
+- **Email**: [maintainer@example.com](mailto:maintainer@example.com)
+
+## ⭐ Show your support
+Give a ⭐️ if this project helped you!
 
 ---
-*Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*"""
+
+<div align="center">
+
+**Generated with ❤️ by [AutoRepo Insight](https://github.com/Amitanand983/AutoRepo-Insight)**
+
+*Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
+
+</div>"""
 
     if base_readme:
         return f"{base_readme}\n\n---\n\n{extra_sections.strip()}"
     else:
         return f"""# 📌 {project_name}
+
+<div align="center">
+
+![Repository Size](https://img.shields.io/badge/Size-{format_size(total_size)}-blue)
+![Total Files](https://img.shields.io/badge/Files-{total_files}-green)
+![Languages](https://img.shields.io/badge/Languages-{len(lang_counts)}-orange)
+![License](https://img.shields.io/badge/License-{license_info.replace(' ', '%20')}-red)
+
+</div>
 
 ## 📄 Description
 {description}
