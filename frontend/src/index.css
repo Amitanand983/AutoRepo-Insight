@@ -128,4 +128,186 @@ html {
 .tab-content-scroll {
   overflow-y: scroll !important;
   scrollbar-gutter: stable !important;
+}
+
+/* Enhanced README Styling */
+.readme-enhanced {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.readme-enhanced h1 {
+  font-size: 2em;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #d0d7de;
+  color: #24292f;
+}
+
+.readme-enhanced h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #d0d7de;
+  color: #24292f;
+}
+
+.readme-enhanced h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  color: #24292f;
+}
+
+.readme-enhanced p {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #24292f;
+}
+
+.readme-enhanced code {
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(175, 184, 193, 0.2);
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.readme-enhanced pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  border: 1px solid #d0d7de;
+}
+
+.readme-enhanced pre code {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  border: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+}
+
+.readme-enhanced blockquote {
+  padding: 0 1em;
+  color: #656d76;
+  border-left: 0.25em solid #d0d7de;
+  margin: 0 0 16px 0;
+}
+
+.readme-enhanced ul,
+.readme-enhanced ol {
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-left: 2em;
+}
+
+.readme-enhanced li {
+  margin-top: 0.25em;
+}
+
+.readme-enhanced table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-top: 0;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.readme-enhanced table th,
+.readme-enhanced table td {
+  padding: 6px 13px;
+  border: 1px solid #d0d7de;
+}
+
+.readme-enhanced table th {
+  font-weight: 600;
+  background-color: #f6f8fa;
+}
+
+.readme-enhanced table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+
+.readme-enhanced img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.readme-enhanced a {
+  color: #0969da;
+  text-decoration: none;
+}
+
+.readme-enhanced a:hover {
+  text-decoration: underline;
+}
+
+.readme-enhanced hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: #d0d7de;
+  border: 0;
+}
+
+/* Dark mode support */
+.dark .readme-enhanced h1,
+.dark .readme-enhanced h2,
+.dark .readme-enhanced h3 {
+  color: #f0f6fc;
+  border-bottom-color: #30363d;
+}
+
+.dark .readme-enhanced p {
+  color: #c9d1d9;
+}
+
+.dark .readme-enhanced code {
+  background-color: rgba(110, 118, 129, 0.4);
+  color: #f0f6fc;
+}
+
+.dark .readme-enhanced pre {
+  background-color: #21262d;
+  border-color: #30363d;
+}
+
+.dark .readme-enhanced blockquote {
+  color: #8b949e;
+  border-left-color: #30363d;
+}
+
+.dark .readme-enhanced table th,
+.dark .readme-enhanced table td {
+  border-color: #30363d;
+}
+
+.dark .readme-enhanced table th {
+  background-color: #21262d;
+}
+
+.dark .readme-enhanced table tr:nth-child(2n) {
+  background-color: #21262d;
+}
+
+.dark .readme-enhanced a {
+  color: #58a6ff;
+}
+
+.dark .readme-enhanced hr {
+  background-color: #30363d;
 } 
