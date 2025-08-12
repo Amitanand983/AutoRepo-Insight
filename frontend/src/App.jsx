@@ -96,8 +96,8 @@ export default function App() {
     );
 
     const CardContainer = ({ children }) => (
-      <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-gray-700/10 rounded-3xl pointer-events-none"></div>
+      <div className="relative bg-white/90 dark:bg-gray-700/90 backdrop-blur-xl border border-white/30 dark:border-gray-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent dark:from-gray-600/20 rounded-3xl pointer-events-none"></div>
         {downloadButton}
         {children}
       </div>
@@ -127,7 +127,85 @@ export default function App() {
             >
               {content ? (
                 <div className="readme-enhanced prose prose-gray dark:prose-invert max-w-none prose-headings:scroll-mt-16 prose-h1:text-3xl prose-h1:font-bold prose-h1:text-gray-900 prose-h1:dark:text-white prose-h1:border-b prose-h1:border-gray-200 prose-h1:dark:border-gray-700 prose-h1:pb-2 prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-semibold prose-h2:text-gray-800 prose-h2:dark:text-gray-200 prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-xl prose-h3:font-medium prose-h3:text-gray-700 prose-h3:dark:text-gray-300 prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-600 prose-p:dark:text-gray-400 prose-p:leading-relaxed prose-p:mb-3 prose-strong:text-gray-900 prose-strong:dark:text-white prose-strong:font-semibold prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:text-gray-800 prose-code:dark:text-gray-200 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-900 prose-pre:dark:bg-gray-950 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600 prose-blockquote:dark:text-gray-400 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:text-gray-600 prose-li:dark:text-gray-400 prose-li:mb-1 prose-hr:border-gray-300 prose-hr:dark:border-gray-600 prose-hr:my-6 prose-table:border-collapse prose-table:w-full prose-table:border prose-table:border-gray-300 prose-table:dark:border-gray-600 prose-th:bg-gray-100 prose-th:dark:bg-gray-800 prose-th:text-gray-900 prose-th:dark:text-white prose-th:font-semibold prose-th:p-3 prose-th:border prose-th:border-gray-300 prose-th:dark:border-gray-600 prose-td:p-3 prose-td:border prose-td:border-gray-300 prose-td:dark:border-gray-600 prose-td:text-gray-600 prose-td:dark:text-gray-400 prose-a:text-blue-600 prose-a:dark:text-blue-400 prose-a:no-underline prose-a:hover:underline prose-img:rounded-lg prose-img:shadow-md">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
+                  {(() => {
+                    // Check if content contains folder structure patterns
+                    const hasFolderStructure = content.includes('├──') && content.includes('└──');
+                    
+                    if (hasFolderStructure) {
+                      // Extract the folder structure section
+                      const lines = content.split('\n');
+                      const folderLines = [];
+                      let inFolderSection = false;
+                      let folderStartIndex = -1;
+                      
+                      for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        if (line.includes('├──') || line.includes('└──') || line.includes('│')) {
+                          if (!inFolderSection) {
+                            inFolderSection = true;
+                            folderStartIndex = i;
+                          }
+                          folderLines.push(line);
+                        } else if (inFolderSection && line.trim() === '') {
+                          // End of folder section
+                          break;
+                        } else if (inFolderSection && !line.includes('│') && !line.includes('├──') && !line.includes('└──')) {
+                          // Still in folder section (might be comments or descriptions)
+                          if (line.trim() !== '' && !line.startsWith('#')) {
+                            // This might be the end of the folder section
+                            break;
+                          }
+                          folderLines.push(line);
+                        }
+                      }
+                      
+                      if (folderLines.length > 0) {
+                        const folderTree = folderLines.join('\n');
+                        const beforeFolder = lines.slice(0, folderStartIndex).join('\n');
+                        const afterFolder = lines.slice(folderStartIndex + folderLines.length).join('\n');
+                        
+                        return (
+                          <>
+                            {beforeFolder && (
+                              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                                {beforeFolder}
+                              </ReactMarkdown>
+                            )}
+                            
+                            <div className="my-6">
+                              <div className="mb-4">
+                                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                                  📁 Project Structure
+                                </h3>
+                              </div>
+                              
+                              <div className="traditional-tree">
+                                <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
+                                  {folderTree}
+                                </pre>
+                              </div>
+                            </div>
+                            
+                            {afterFolder && (
+                              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                                {afterFolder}
+                              </ReactMarkdown>
+                            )}
+                          </>
+                        );
+                      }
+                    }
+                    
+                    // If no folder structure found, render normally
+                    return (
+                      <ReactMarkdown 
+                        remarkPlugins={[remarkGfm]} 
+                        rehypePlugins={[rehypeRaw]}
+                      >
+                        {content}
+                      </ReactMarkdown>
+                    );
+                  })()}
                 </div>
               ) : (
                 <div className="text-center py-12">
@@ -157,13 +235,9 @@ export default function App() {
           <CardContainer>
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">📚 Documentation.md</h2>
             <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
-              {content ? (
-                <div className="prose prose-gray dark:prose-invert max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
-                </div>
-              ) : (
-                <span className="text-gray-400">No documentation available.</span>
-              )}
+              <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
+                {content || <span className="text-gray-400">No documentation available.</span>}
+              </pre>
             </div>
           </CardContainer>
         );
@@ -183,13 +257,9 @@ export default function App() {
           <CardContainer>
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">🤖 GPT Summary (coming soon)</h2>
             <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
-              {content ? (
-                <div className="prose prose-gray dark:prose-invert max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
-                </div>
-              ) : (
-                <span className="text-gray-400">No GPT summary available.</span>
-              )}
+              <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
+                {content || <span className="text-gray-400">No GPT summary available.</span>}
+              </pre>
             </div>
           </CardContainer>
         );
