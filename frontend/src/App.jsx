@@ -96,7 +96,7 @@ export default function App() {
 
     const CardContainer = ({ children }) => (
       <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-gray-700/10 rounded-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-gray-700/10 rounded-3xl pointer-events-none"></div>
         {downloadButton}
         {children}
       </div>
@@ -107,7 +107,17 @@ export default function App() {
         return (
           <CardContainer>
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">📄 README.md</h2>
-            <div className="overflow-auto max-h-[80vh]">
+            <div 
+              className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" 
+              style={{ 
+                overflowY: 'auto', 
+                maxHeight: '60vh',
+                minHeight: '200px',
+                border: '1px solid rgba(147, 51, 234, 0.3)',
+                borderRadius: '8px',
+                padding: '16px'
+              }}
+            >
               {content ? (
                 <div className="prose prose-gray dark:prose-invert max-w-none">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
@@ -122,7 +132,7 @@ export default function App() {
         return (
           <CardContainer>
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">📦 requirements.txt</h2>
-            <div className="overflow-auto max-h-[80vh]">
+            <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
               <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
                 {content || <span className="text-gray-400">No requirements.txt available.</span>}
               </pre>
@@ -133,7 +143,7 @@ export default function App() {
         return (
           <CardContainer>
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">📚 Documentation.md</h2>
-            <div className="overflow-auto max-h-[80vh]">
+            <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
               {content ? (
                 <div className="prose prose-gray dark:prose-invert max-w-none">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
@@ -148,7 +158,7 @@ export default function App() {
         return (
           <CardContainer>
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">🛡️ .gitignore</h2>
-            <div className="overflow-auto max-h-[80vh]">
+            <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
               <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
                 {content || <span className="text-gray-400">No .gitignore available.</span>}
               </pre>
@@ -159,7 +169,7 @@ export default function App() {
         return (
           <CardContainer>
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">🤖 GPT Summary (coming soon)</h2>
-            <div className="overflow-auto max-h-[80vh]">
+            <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
               {content ? (
                 <div className="prose prose-gray dark:prose-invert max-w-none">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
@@ -179,9 +189,37 @@ export default function App() {
     <div className={`min-h-screen ${theme === "dark" ? "bg-gradient-to-br from-gray-900 via-gray-800 to-black" : "bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"} transition-all duration-700 flex flex-col`}>
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {/* Floating orbs with different animation patterns */}
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-400/20 to-orange-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-indigo-400/10 to-purple-600/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+        
+        {/* Additional moving elements with custom animations */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-green-400/15 to-blue-500/15 rounded-full blur-2xl animate-float delay-700"></div>
+        <div className="absolute bottom-32 right-32 w-24 h-24 bg-gradient-to-br from-yellow-400/20 to-red-500/20 rounded-full blur-2xl animate-float-slow delay-300"></div>
+        <div className="absolute top-1/3 right-1/4 w-20 h-20 bg-gradient-to-br from-purple-400/25 to-pink-500/25 rounded-full blur-xl animate-drift delay-1000"></div>
+        
+        {/* Floating particles with custom floating animation */}
+        <div className="absolute top-1/4 left-1/3 w-3 h-3 bg-blue-400/40 rounded-full animate-float delay-200"></div>
+        <div className="absolute top-3/4 right-1/3 w-2 h-2 bg-purple-400/40 rounded-full animate-float-slow delay-500"></div>
+        <div className="absolute top-1/2 left-1/4 w-2.5 h-2.5 bg-pink-400/40 rounded-full animate-drift delay-800"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-3.5 h-3.5 bg-indigo-400/40 rounded-full animate-float delay-400"></div>
+        
+        {/* Moving gradient lines */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-400/30 to-transparent animate-pulse"></div>
+        <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-transparent via-purple-400/30 to-transparent animate-pulse delay-500"></div>
+        
+        {/* Floating geometric shapes */}
+        <div className="absolute top-1/6 right-1/6 w-16 h-16 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-lg blur-lg animate-float-slow delay-1000"></div>
+        <div className="absolute bottom-1/6 left-1/6 w-12 h-12 bg-gradient-to-br from-orange-400/25 to-red-500/25 rounded-full blur-lg animate-drift delay-500"></div>
+        
+        {/* Wavy lines */}
+        <div className="absolute top-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-green-400/20 to-transparent animate-pulse delay-300"></div>
+        <div className="absolute bottom-1/3 right-0 w-full h-px bg-gradient-to-l from-transparent via-purple-400/20 to-transparent animate-pulse delay-700"></div>
+        
+        {/* Glowing orbs */}
+        <div className="absolute top-1/5 left-1/5 w-8 h-8 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-full blur-md animate-glow delay-600"></div>
+        <div className="absolute bottom-1/5 right-1/5 w-6 h-6 bg-gradient-to-br from-rose-400/35 to-pink-500/35 rounded-full blur-md animate-glow delay-900"></div>
       </div>
 
       {/* Header */}
