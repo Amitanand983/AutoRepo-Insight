@@ -89,15 +89,16 @@ export default function App() {
       <button
         onClick={() => handleDownload(content, currentTab.filename)}
         disabled={!content}
-        className="absolute top-4 right-4 px-4 py-2 text-sm bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-md"
+        className="absolute top-4 right-4 px-4 py-2 text-sm bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-md backdrop-blur-sm border border-white/20"
       >
         ⬇️ Download
       </button>
     );
 
     const CardContainer = ({ children }) => (
-      <div className="relative bg-white/90 dark:bg-gray-700/90 backdrop-blur-xl border border-white/30 dark:border-gray-600/50 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent dark:from-gray-600/20 rounded-3xl pointer-events-none"></div>
+      <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.01]">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent dark:from-gray-700/20 rounded-3xl pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 to-purple-500/5 rounded-3xl pointer-events-none"></div>
         {downloadButton}
         {children}
       </div>
@@ -107,160 +108,337 @@ export default function App() {
       case "readme":
         return (
           <CardContainer>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl font-bold">📄</span>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">README.md</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Repository Documentation</p>
-              </div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                📄 README.md
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Professional documentation generated for your repository
+              </p>
             </div>
             
-            <div 
-              className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" 
-              style={{ 
-                overflowY: 'auto', 
-                maxHeight: '60vh',
-                minHeight: '200px'
-              }}
-            >
-              {content ? (
-                <div className="readme-enhanced prose prose-gray dark:prose-invert max-w-none prose-headings:scroll-mt-16 prose-h1:text-3xl prose-h1:font-bold prose-h1:text-gray-900 prose-h1:dark:text-white prose-h1:border-b prose-h1:border-gray-200 prose-h1:dark:border-gray-700 prose-h1:pb-2 prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-semibold prose-h2:text-gray-800 prose-h2:dark:text-gray-200 prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-xl prose-h3:font-medium prose-h3:text-gray-700 prose-h3:dark:text-gray-300 prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-600 prose-p:dark:text-gray-400 prose-p:leading-relaxed prose-p:mb-3 prose-strong:text-gray-900 prose-strong:dark:text-white prose-strong:font-semibold prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:text-gray-800 prose-code:dark:text-gray-200 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-900 prose-pre:dark:bg-gray-950 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600 prose-blockquote:dark:text-gray-400 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:text-gray-600 prose-li:dark:text-gray-400 prose-li:mb-1 prose-hr:border-gray-300 prose-hr:dark:border-gray-600 prose-hr:my-6 prose-table:border-collapse prose-table:w-full prose-table:border prose-table:border-gray-300 prose-table:dark:border-gray-600 prose-th:bg-gray-100 prose-th:dark:bg-gray-800 prose-th:text-gray-900 prose-th:dark:text-white prose-th:font-semibold prose-th:p-3 prose-th:border prose-th:border-gray-300 prose-th:dark:border-gray-600 prose-td:p-3 prose-td:border prose-td:border-gray-300 prose-td:dark:border-gray-600 prose-td:text-gray-600 prose-td:dark:text-gray-400 prose-a:text-blue-600 prose-a:dark:text-blue-400 prose-a:no-underline prose-a:hover:underline prose-img:rounded-lg prose-img:shadow-md">
-                  {(() => {
-                    // Check if content contains folder structure patterns
-                    const hasFolderStructure = content.includes('├──') && content.includes('└──');
+            {content ? (
+              <div className="readme-enhanced prose prose-gray dark:prose-invert max-w-none prose-headings:scroll-mt-16 prose-h1:text-3xl prose-h1:font-bold prose-h1:text-gray-900 prose-h1:dark:text-white prose-h1:border-b prose-h1:border-gray-200 prose-h1:dark:border-gray-700 prose-h1:pb-2 prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-semibold prose-h2:text-gray-800 prose-h2:dark:text-gray-200 prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-xl prose-h3:font-medium prose-h3:text-gray-700 prose-h3:dark:text-gray-300 prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-600 prose-p:dark:text-gray-400 prose-p:leading-relaxed prose-p:mb-3 prose-strong:text-gray-900 prose-strong:dark:text-white prose-strong:font-semibold prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:text-gray-800 prose-code:dark:text-gray-200 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-900 prose-pre:dark:bg-gray-950 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600 prose-blockquote:dark:text-gray-400 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:text-gray-600 prose-li:dark:text-gray-400 prose-li:mb-1 prose-hr:border-gray-300 prose-hr:dark:border-gray-600 prose-hr:my-6 prose-table:border-collapse prose-table:w-full prose-table:border prose-table:border-gray-300 prose-table:dark:border-gray-600 prose-th:bg-gray-100 prose-th:dark:bg-gray-800 prose-th:text-gray-900 prose-th:dark:text-white prose-th:font-semibold prose-th:p-3 prose-th:border prose-th:border-gray-300 prose-th:dark:border-gray-600 prose-td:p-3 prose-td:border prose-td:border-gray-300 prose-td:dark:border-gray-600 prose-td:text-gray-600 prose-td:dark:text-gray-400 prose-a:text-blue-600 prose-a:dark:text-blue-400 prose-a:no-underline prose-a:hover:underline prose-img:rounded-lg prose-img:shadow-md">
+                {(() => {
+                  const hasFolderStructure = content.includes('├──') && content.includes('└──');
+                  
+                  if (hasFolderStructure) {
+                    const lines = content.split('\n');
+                    const folderLines = [];
+                    let inFolderSection = false;
+                    let folderStartIndex = -1;
                     
-                    if (hasFolderStructure) {
-                      // Extract the folder structure section
-                      const lines = content.split('\n');
-                      const folderLines = [];
-                      let inFolderSection = false;
-                      let folderStartIndex = -1;
-                      
-                      for (let i = 0; i < lines.length; i++) {
-                        const line = lines[i];
-                        if (line.includes('├──') || line.includes('└──') || line.includes('│')) {
-                          if (!inFolderSection) {
-                            inFolderSection = true;
-                            folderStartIndex = i;
-                          }
-                          folderLines.push(line);
-                        } else if (inFolderSection && line.trim() === '') {
-                          // End of folder section
-                          break;
-                        } else if (inFolderSection && !line.includes('│') && !line.includes('├──') && !line.includes('└──')) {
-                          // Still in folder section (might be comments or descriptions)
-                          if (line.trim() !== '' && !line.startsWith('#')) {
-                            // This might be the end of the folder section
-                            break;
-                          }
-                          folderLines.push(line);
+                    for (let i = 0; i < lines.length; i++) {
+                      const line = lines[i];
+                      if (line.includes('├──') || line.includes('└──') || line.includes('│')) {
+                        if (!inFolderSection) {
+                          inFolderSection = true;
+                          folderStartIndex = i;
                         }
-                      }
-                      
-                      if (folderLines.length > 0) {
-                        const folderTree = folderLines.join('\n');
-                        const beforeFolder = lines.slice(0, folderStartIndex).join('\n');
-                        const afterFolder = lines.slice(folderStartIndex + folderLines.length).join('\n');
-                        
-                        return (
-                          <>
-                            {beforeFolder && (
-                              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-                                {beforeFolder}
-                              </ReactMarkdown>
-                            )}
-                            
-                            <div className="my-6">
-                              <div className="mb-4">
-                                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                                  📁 Project Structure
-                                </h3>
-                              </div>
-                              
-                              <div className="traditional-tree">
-                                <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
-                                  {folderTree}
-                                </pre>
-                              </div>
-                            </div>
-                            
-                            {afterFolder && (
-                              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-                                {afterFolder}
-                              </ReactMarkdown>
-                            )}
-                          </>
-                        );
+                        folderLines.push(line);
+                      } else if (inFolderSection && line.trim() === '') {
+                        break;
+                      } else if (inFolderSection && !line.includes('│') && !line.includes('├──') && !line.includes('└──')) {
+                        if (line.trim() !== '' && !line.startsWith('#')) {
+                          break;
+                        }
+                        folderLines.push(line);
                       }
                     }
                     
-                    // If no folder structure found, render normally
-                    return (
-                      <ReactMarkdown 
-                        remarkPlugins={[remarkGfm]} 
-                        rehypePlugins={[rehypeRaw]}
-                      >
-                        {content}
-                      </ReactMarkdown>
-                    );
-                  })()}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-3xl text-gray-400">📝</span>
-                  </div>
-                  <p className="text-gray-500 dark:text-gray-400 text-lg">No README available</p>
-                  <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">This repository doesn't have a README file yet.</p>
-                </div>
-              )}
-            </div>
+                    if (folderLines.length > 0) {
+                      const folderTree = folderLines.join('\n');
+                      const beforeFolder = lines.slice(0, folderStartIndex).join('\n');
+                      const afterFolder = lines.slice(folderStartIndex + folderLines.length).join('\n');
+                      
+                      return (
+                        <>
+                          {beforeFolder && (
+                            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                              {beforeFolder}
+                            </ReactMarkdown>
+                          )}
+                          
+                          <div className="my-8">
+                            <div className="mb-6">
+                              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+                                <span className="text-2xl">📁</span>
+                                Project Structure
+                              </h3>
+                              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                                Visual representation of your repository's file and folder organization
+                              </p>
+                            </div>
+                            
+                            <div className="traditional-tree">
+                              <pre className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner font-mono">
+                                {folderTree}
+                              </pre>
+                            </div>
+                          </div>
+                          
+                          {afterFolder && (
+                            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                              {afterFolder}
+                            </ReactMarkdown>
+                          )}
+                        </>
+                      );
+                    }
+                  }
+                  
+                  return (
+                    <ReactMarkdown 
+                      remarkPlugins={[remarkGfm]} 
+                      rehypePlugins={[rehypeRaw]}
+                    >
+                      {content}
+                    </ReactMarkdown>
+                  );
+                })()}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">📄</div>
+                <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No README Content
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500">
+                  Analyze a repository to generate README documentation
+                </p>
+              </div>
+            )}
           </CardContainer>
         );
       case "requirements":
         return (
           <CardContainer>
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">📦 requirements.txt</h2>
-            <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
-              <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
-                {content || <span className="text-gray-400">No requirements.txt available.</span>}
-              </pre>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                📦 Requirements.txt
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Python dependencies and package requirements
+              </p>
             </div>
+            
+            {content ? (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6 border border-blue-200/50 dark:border-blue-700/50">
+                  <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+                    <span className="text-xl">🔍</span>
+                    Dependency Analysis
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-white/60 dark:bg-blue-800/40 rounded-xl p-3 text-center">
+                      <div className="text-blue-600 dark:text-blue-300 font-semibold">
+                        {(() => {
+                          const lines = content.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                          return lines.length;
+                        })()}
+                      </div>
+                      <div className="text-blue-700 dark:text-blue-400 text-xs">Total Packages</div>
+                    </div>
+                    <div className="bg-white/60 dark:bg-blue-800/40 rounded-xl p-3 text-center">
+                      <div className="text-blue-600 dark:text-blue-300 font-semibold">
+                        {(() => {
+                          const lines = content.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                          const hasVersions = lines.some(line => line.includes('==') || line.includes('>=') || line.includes('<='));
+                          return hasVersions ? 'With Versions' : 'No Versions';
+                        })()}
+                      </div>
+                      <div className="text-blue-700 dark:text-blue-400 text-xs">Version Info</div>
+                    </div>
+                    <div className="bg-white/60 dark:bg-blue-800/40 rounded-xl p-3 text-center">
+                      <div className="text-blue-600 dark:text-blue-300 font-semibold">
+                        {(() => {
+                          const lines = content.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                          const devDeps = lines.filter(line => line.includes('dev') || line.includes('test') || line.includes('lint'));
+                          return devDeps.length > 0 ? 'Yes' : 'No';
+                        })()}
+                      </div>
+                      <div className="text-blue-700 dark:text-blue-400 text-xs">Dev Dependencies</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+                    <span className="text-xl">📋</span>
+                    Package List
+                  </h3>
+                  <pre className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm p-4 rounded-xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-600/50 font-mono">
+                    {content}
+                  </pre>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">📦</div>
+                <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No Requirements Found
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500">
+                  Analyze a repository to discover Python dependencies
+                </p>
+              </div>
+            )}
           </CardContainer>
         );
       case "documentation":
         return (
           <CardContainer>
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">📚 Documentation.md</h2>
-            <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
-              <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
-                {content || <span className="text-gray-400">No documentation available.</span>}
-              </pre>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                📚 Documentation
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Auto-generated code documentation and API references
+              </p>
             </div>
+            
+            {content ? (
+              <div className="prose prose-gray dark:prose-invert max-w-none prose-headings:scroll-mt-16 prose-h1:text-2xl prose-h1:font-bold prose-h1:text-gray-900 prose-h1:dark:text-white prose-h1:border-b prose-h1:border-gray-200 prose-h1:dark:border-gray-700 prose-h1:pb-2 prose-h1:mb-4 prose-h2:text-xl prose-h2:font-semibold prose-h2:text-gray-800 prose-h2:dark:text-gray-200 prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-medium prose-h3:text-gray-700 prose-h3:dark:text-gray-300 prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-600 prose-p:dark:text-gray-400 prose-p:leading-relaxed prose-p:mb-3 prose-strong:text-gray-900 prose-strong:dark:text-white prose-strong:font-semibold prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:text-gray-800 prose-code:dark:text-gray-200 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-900 prose-pre:dark:bg-gray-950 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600 prose-blockquote:dark:text-gray-400 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:text-gray-600 prose-li:dark:text-gray-400 prose-li:mb-1 prose-hr:border-gray-300 prose-hr:dark:border-gray-600 prose-hr:my-6 prose-table:border-collapse prose-table:w-full prose-table:border prose-table:border-gray-300 prose-table:dark:border-gray-600 prose-th:bg-gray-100 prose-th:dark:bg-gray-800 prose-th:text-gray-900 prose-th:dark:text-white prose-th:font-semibold prose-th:p-3 prose-th:border prose-th:border-gray-300 prose-th:dark:border-gray-600 prose-td:p-3 prose-td:border prose-td:border-gray-300 prose-td:dark:border-gray-600 prose-td:text-gray-600 prose-td:dark:text-gray-400 prose-a:text-blue-600 prose-a:dark:text-blue-400 prose-a:no-underline prose-a:hover:underline prose-img:rounded-lg prose-img:shadow-md">
+                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                  {content}
+                </ReactMarkdown>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">📚</div>
+                <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No Documentation Available
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500">
+                  Analyze a repository to generate code documentation
+                </p>
+              </div>
+            )}
           </CardContainer>
         );
       case "gitignore":
         return (
           <CardContainer>
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">🛡️ .gitignore</h2>
-            <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
-              <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
-                {content || <span className="text-gray-400">No .gitignore available.</span>}
-              </pre>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                🛡️ .gitignore
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Recommended files and directories to exclude from version control
+              </p>
             </div>
+            
+            {content ? (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6 border border-green-200/50 dark:border-green-700/50">
+                  <h3 className="text-lg font-semibold text-green-900 dark:text-green-100 mb-3 flex items-center gap-2">
+                    <span className="text-xl">📊</span>
+                    Gitignore Analysis
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-white/60 dark:bg-green-800/40 rounded-xl p-3 text-center">
+                      <div className="text-green-600 dark:text-green-300 font-semibold">
+                        {(() => {
+                          const lines = content.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                          return lines.length;
+                        })()}
+                      </div>
+                      <div className="text-green-700 dark:text-green-400 text-xs">Ignore Patterns</div>
+                    </div>
+                    <div className="bg-white/60 dark:bg-green-800/40 rounded-xl p-3 text-center">
+                      <div className="text-green-600 dark:text-green-300 font-semibold">
+                        {(() => {
+                          const patterns = content.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                          const hasComments = content.split('\n').some(line => line.trim().startsWith('#'));
+                          return hasComments ? 'Yes' : 'No';
+                        })()}
+                      </div>
+                      <div className="text-green-700 dark:text-green-400 text-xs">Has Comments</div>
+                    </div>
+                    <div className="bg-white/60 dark:bg-green-800/40 rounded-xl p-3 text-center">
+                      <div className="text-green-600 dark:text-green-300 font-semibold">
+                        {(() => {
+                          const patterns = content.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                          const hasWildcards = patterns.some(line => line.includes('*') || line.includes('?'));
+                          return hasWildcards ? 'Yes' : 'No';
+                        })()}
+                      </div>
+                      <div className="text-green-700 dark:text-green-400 text-xs">Wildcards</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+                    <span className="text-xl">📋</span>
+                    Ignore Patterns
+                  </h3>
+                  <pre className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm p-4 rounded-xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-600/50 font-mono">
+                    {content}
+                  </pre>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🛡️</div>
+                <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No Gitignore Available
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500">
+                  Analyze a repository to generate .gitignore recommendations
+                </p>
+              </div>
+            )}
           </CardContainer>
         );
       case "gptsummary":
         return (
           <CardContainer>
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">🤖 GPT Summary (coming soon)</h2>
-            <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
-              <pre className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-2xl overflow-x-auto text-sm border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
-                {content || <span className="text-gray-400">No GPT summary available.</span>}
-              </pre>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                🤖 GPT Summary
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                AI-powered repository analysis and insights
+              </p>
             </div>
+            
+            {content ? (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-200/50 dark:border-purple-700/50">
+                  <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-3 flex items-center gap-2">
+                    <span className="text-xl">✨</span>
+                    AI Analysis
+                  </h3>
+                  <p className="text-purple-700 dark:text-purple-300 text-sm">
+                    This summary provides intelligent insights about your repository's architecture, 
+                    code quality, and potential improvements.
+                  </p>
+                </div>
+                
+                <div className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+                    <span className="text-xl">📝</span>
+                    Summary Content
+                  </h3>
+                  <div className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-600 prose-p:dark:text-gray-400 prose-p:leading-relaxed prose-p:mb-3 prose-strong:text-gray-900 prose-strong:dark:text-white prose-strong:font-semibold prose-ul:list-disc prose-ul:pl-6 prose-li:text-gray-600 prose-li:dark:text-gray-400 prose-li:mb-1">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                      {content}
+                    </ReactMarkdown>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🤖</div>
+                <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No GPT Summary Available
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500">
+                  Analyze a repository to generate AI-powered insights
+                </p>
+              </div>
+            )}
           </CardContainer>
         );
       default:
@@ -306,62 +484,81 @@ export default function App() {
       </div>
 
       {/* Header */}
-      <header className="flex-shrink-0 relative z-10">
-        <div className="max-w-5xl mx-auto py-12 px-4">
-          <div className="text-center mb-12">
-            <div className={`transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-              <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent drop-shadow-2xl">
-                AutoRepo Insight
-              </h1>
-              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                📊 AI-powered GitHub repo analyzer — Generate README, requirements, docs & more in seconds.
-              </p>
+      <header className="relative z-20 py-8 border-b border-white/20 dark:border-gray-700/30">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white text-2xl font-bold">🚀</span>
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  AutoRepo Insight
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 font-medium">
+                  Intelligent GitHub Repository Analysis
+                </p>
+              </div>
             </div>
-            <div className={`transition-all duration-1000 delay-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-              <button 
-                onClick={handleTheme} 
-                className="mt-8 px-6 py-3 rounded-2xl bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-all duration-300 transform hover:scale-110 hover:shadow-2xl shadow-xl"
-              >
-                <span className="text-2xl">{theme === "dark" ? "🌙" : "☀️"}</span>
-              </button>
-            </div>
+            <button
+              onClick={handleTheme}
+              className="p-3 bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl rounded-xl border border-white/20 dark:border-gray-700/50 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-all duration-300 transform hover:scale-105"
+            >
+              {theme === "light" ? "🌙" : "☀️"}
+            </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 relative z-10">
-        <div className="max-w-5xl mx-auto px-4 pb-12">
-          {/* Input Section */}
-          <div className={`mb-12 transition-all duration-1000 delay-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl rounded-3xl p-8 border border-white/30 dark:border-gray-700/30 shadow-2xl">
-              <div className="flex flex-col md:flex-row gap-4 mb-4">
-                <input
-                  type="text"
-                  className="flex-1 px-6 py-4 border border-white/30 dark:border-gray-600/30 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-4 focus:ring-blue-500/30 focus:border-transparent transition-all duration-300 transform focus:scale-[1.02]"
-                  placeholder="Paste GitHub repo URL..."
-                  value={url}
-                  onChange={e => setUrl(e.target.value)}
-                  disabled={loading}
-                />
-                <button
-                  onClick={handleAnalyze}
-                  disabled={loading || !url}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl font-semibold text-lg min-w-[140px] md:min-w-[160px] flex items-center justify-center gap-3"
-                >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Analyzing...
-                    </>
-                  ) : (
-                    "🚀 Analyze"
-                  )}
-                </button>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
-                Supports public GitHub URLs like https://github.com/user/repo
+        <div className="max-w-5xl mx-auto px-4 py-12">
+          {/* Enhanced Hero Section */}
+          <div className="text-center mb-16">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                Analyze Any GitHub Repository
+                <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  in Seconds
+                </span>
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                Get instant insights into project structure, dependencies, documentation, and more. 
+                Perfect for developers, maintainers, and contributors.
               </p>
+              
+              {/* Enhanced Input Section */}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-3xl p-8 shadow-2xl">
+                <div className="flex flex-col md:flex-row gap-4 items-center">
+                  <div className="flex-1 w-full">
+                    <input
+                      type="text"
+                      placeholder="Enter GitHub repository URL (e.g., https://github.com/user/repo)"
+                      value={url}
+                      onChange={e => setUrl(e.target.value)}
+                      disabled={loading}
+                      className="enhanced-input w-full px-6 py-4 text-lg bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm border-2 border-gray-200/50 dark:border-gray-600/50 rounded-2xl focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-all duration-300 placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50"
+                    />
+                  </div>
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={loading || !url}
+                    className="enhanced-button px-8 py-4 text-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl font-semibold min-w-[160px] flex items-center justify-center gap-3"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Analyzing...
+                      </>
+                    ) : (
+                      "🚀 Analyze Repository"
+                    )}
+                  </button>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
+                  Supports public GitHub URLs • Free to use • No authentication required
+                </p>
+              </div>
             </div>
           </div>
           
@@ -384,18 +581,113 @@ export default function App() {
             </div>
           )}
           
+          {/* Repo Stats Cards */}
+          {Object.keys(results).length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
+                📊 Repository Overview
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Total Files */}
+                <div 
+                  className="stats-card bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-2xl p-4 text-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl"
+                  onClick={() => {
+                    const count = (() => {
+                      const readmeContent = results.readme || '';
+                      const lines = readmeContent.split('\n');
+                      let fileCount = 0;
+                      lines.forEach(line => {
+                        if (line.includes('├──') || line.includes('└──')) {
+                          fileCount++;
+                        }
+                      });
+                      return fileCount;
+                    })();
+                    showToast(`📁 Repository contains ${count} files and directories`, 'success');
+                  }}
+                >
+                  <div className="text-2xl mb-2">📁</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">
+                    {(() => {
+                      const readmeContent = results.readme || '';
+                      const lines = readmeContent.split('\n');
+                      let fileCount = 0;
+                      lines.forEach(line => {
+                        if (line.includes('├──') || line.includes('└──')) {
+                          fileCount++;
+                        }
+                      });
+                      return fileCount;
+                    })()}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Total Files</div>
+                </div>
+                
+                {/* Languages */}
+                <div className="stats-card bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-2xl p-4 text-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl">
+                  <div className="text-2xl mb-2">🐍</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">
+                    {(() => {
+                      const readmeContent = results.readme || '';
+                      const languages = new Set();
+                      if (readmeContent.includes('.py')) languages.add('Python');
+                      if (readmeContent.includes('.js')) languages.add('JavaScript');
+                      if (readmeContent.includes('.ts')) languages.add('TypeScript');
+                      if (readmeContent.includes('.java')) languages.add('Java');
+                      if (readmeContent.includes('.cpp')) languages.add('C++');
+                      if (readmeContent.includes('.go')) languages.add('Go');
+                      if (readmeContent.includes('.rs')) languages.add('Rust');
+                      return languages.size || 'Unknown';
+                    })()}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Languages</div>
+                </div>
+                
+                {/* Dependencies */}
+                <div className="stats-card bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-2xl p-4 text-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl">
+                  <div className="text-2xl mb-2">📦</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">
+                    {(() => {
+                      const requirements = results.requirements || '';
+                      if (!requirements || requirements.includes('No requirements')) return 0;
+                      const lines = requirements.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                      return lines.length;
+                    })()}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Dependencies</div>
+                </div>
+                
+                {/* Documentation */}
+                <div className="stats-card bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-2xl p-4 text-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl">
+                  <div className="text-2xl mb-2">📚</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">
+                    {(() => {
+                      let docCount = 0;
+                      if (results.readme) docCount++;
+                      if (results.documentation) docCount++;
+                      if (results.gitignore) docCount++;
+                      return docCount;
+                    })()}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Documents</div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* Tabbed Output */}
           <div className={`transition-all duration-1000 delay-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="mt-12">
-              <Tabs.List className="flex border-b border-white/20 dark:border-gray-700/30 mb-8 overflow-x-auto bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl rounded-2xl p-2">
+              <Tabs.List className="flex border-b border-white/20 dark:border-gray-700/30 mb-8 overflow-x-auto bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl rounded-2xl p-2 shadow-lg">
                 {TABS.map(tab => (
                   <Tabs.Trigger
                     key={tab.key}
                     value={tab.key}
                     className={`px-6 py-4 -mb-px border-b-2 font-medium cursor-pointer transition-all duration-300 rounded-2xl whitespace-nowrap flex-shrink-0 transform hover:scale-105
                       ${activeTab === tab.key
-                        ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl shadow-lg'
-                        : 'border-transparent text-gray-500 hover:text-blue-600 hover:bg-white/30 dark:hover:bg-gray-800/30'}
+                        ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-lg font-semibold'
+                        : 'border-transparent text-gray-500 hover:text-blue-600 hover:bg-white/30 dark:hover:bg-gray-800/30 hover:border-blue-300'
+                      }
                     `}
                   >
                     {tab.label}

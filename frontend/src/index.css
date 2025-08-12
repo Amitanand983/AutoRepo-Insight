@@ -315,6 +315,50 @@ html {
   margin: 0.25rem;
 }
 
+/* Enhanced Stats Cards */
+.stats-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.stats-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Enhanced Tab Styling */
+.tab-trigger {
+  transition: all 0.3s ease;
+}
+
+.tab-trigger:hover {
+  transform: translateY(-2px);
+}
+
+.tab-trigger.active {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced Input Field */
+.enhanced-input {
+  transition: all 0.3s ease;
+}
+
+.enhanced-input:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Enhanced Button */
+.enhanced-button {
+  transition: all 0.3s ease;
+}
+
+.enhanced-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
 /* Dark mode support */
 .dark .readme-enhanced {
   color: #f1f5f9;
@@ -393,27 +437,188 @@ html {
 }
 
 /* Traditional Tree View Styling */
-.traditional-tree {
-  margin: 1rem 0;
-}
-
 .traditional-tree pre {
   font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
-  background-color: #f8fafc;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   color: #1e293b;
   padding: 1.5rem;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   font-size: 0.875rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.traditional-tree pre::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
 }
 
 .dark .traditional-tree pre {
-  background-color: #1e293b;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   color: #f1f5f9;
   border-color: #475569;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.dark .traditional-tree pre::before {
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.3), transparent);
+}
+
+/* Enhanced README Header Styling */
+.readme-enhanced h1 {
+  position: relative;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 3px solid;
+  border-image: linear-gradient(90deg, #3b82f6, #8b5cf6) 1;
+  text-align: center;
+}
+
+.dark .readme-enhanced h1 {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  border-image: linear-gradient(90deg, #60a5fa, #a78bfa) 1;
+}
+
+/* Enhanced Stats Section Styling */
+.readme-enhanced h2:contains("Repository Statistics"),
+.readme-enhanced h2:contains("📊 Repository Statistics") {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  border-left: 4px solid #0ea5e9;
+  margin: 2rem 0 1rem 0;
+}
+
+.dark .readme-enhanced h2:contains("Repository Statistics"),
+.dark .readme-enhanced h2:contains("📊 Repository Statistics") {
+  background: linear-gradient(135deg, #0c4a6e 0%, #0e7490 100%);
+  border-left-color: #38bdf8;
+}
+
+/* Enhanced Code Block Styling */
+.readme-enhanced pre:not(.traditional-tree pre) {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #f1f5f9;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #475569;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.readme-enhanced pre:not(.traditional-tree pre)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+}
+
+.dark .readme-enhanced pre:not(.traditional-tree pre) {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-color: #475569;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Enhanced Table Styling */
+.readme-enhanced table {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.readme-enhanced th {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+.dark .readme-enhanced th {
+  background: linear-gradient(135deg, #334155 0%, #475569 100%);
+}
+
+/* Enhanced List Styling */
+.readme-enhanced ul li::marker {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.dark .readme-enhanced ul li::marker {
+  color: #60a5fa;
+}
+
+.readme-enhanced ol li::marker {
+  color: #8b5cf6;
+  font-weight: bold;
+}
+
+.dark .readme-enhanced ol li::marker {
+  color: #a78bfa;
+}
+
+/* Enhanced Blockquote Styling */
+.readme-enhanced blockquote {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0ea5e9;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.readme-enhanced blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  font-size: 4rem;
+  color: #0ea5e9;
+  opacity: 0.3;
+  font-family: serif;
+}
+
+.dark .readme-enhanced blockquote {
+  background: linear-gradient(135deg, #0c4a6e 0%, #0e7490 100%);
+  border-left-color: #38bdf8;
+}
+
+.dark .readme-enhanced blockquote::before {
+  color: #38bdf8;
 } 
