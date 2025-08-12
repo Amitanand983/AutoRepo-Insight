@@ -958,54 +958,164 @@ export default function App() {
                   in Seconds
                 </span>
               </h2>
-              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6 md:mb-8 leading-relaxed px-4">
-                Get instant insights into project structure, dependencies, documentation, and more. 
-                Perfect for developers, maintainers, and contributors.
+              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 md:mb-10 max-w-2xl mx-auto">
+                Get instant insights, professional documentation, and comprehensive analytics for any public GitHub repository
               </p>
               
-              {/* Enhanced Input Section */}
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl">
-                <div className="flex flex-col gap-4 items-center">
-                  <div className="w-full">
-                    <label htmlFor="github-url" className="sr-only">
-                      GitHub Repository URL
-                    </label>
-                    <input
-                      id="github-url"
-                      type="text"
-                      placeholder="Enter GitHub repository URL (e.g., https://github.com/user/repo)"
-                      value={url}
-                      onChange={e => setUrl(e.target.value)}
-                      disabled={loading}
-                      className="enhanced-input w-full px-4 md:px-6 py-3 md:py-4 text-base md:text-lg bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm border-2 border-gray-200/50 dark:border-gray-600/50 rounded-xl md:rounded-2xl focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-all duration-300 placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50"
-                      aria-describedby="url-help"
-                    />
-                    <p id="url-help" className="text-xs md:text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
-                      Supports public GitHub URLs • Free to use • No authentication required
-                    </p>
+              {/* Repository Stats Section */}
+              {Object.keys(results).length > 0 && (
+                <div className="mb-8 md:mb-10">
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-700 dark:text-gray-300 mb-4 md:mb-6">
+                    📊 Repository Overview
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto">
+                    {/* Total Files Stats */}
+                    <button
+                      onClick={() => {
+                        setActiveTab('readme');
+                        showToast(`📁 Repository contains ${(() => {
+                          if (!results.readme) return 0;
+                          const lines = results.readme.split('\n');
+                          return lines.filter(line => line.includes('├──') || line.includes('└──')).length;
+                        })()} files and folders`, 'success');
+                      }}
+                      className="stats-card group"
+                      aria-label="View file structure details"
+                    >
+                      <div className="text-2xl md:text-3xl mb-2">📁</div>
+                      <div className="text-lg md:text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {(() => {
+                          if (!results.readme) return '0';
+                          const lines = results.readme.split('\n');
+                          return lines.filter(line => line.includes('├──') || line.includes('└──')).length;
+                        })()}
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Total Files</div>
+                    </button>
+
+                    {/* Languages Stats */}
+                    <button
+                      onClick={() => {
+                        setActiveTab('analytics');
+                        showToast(`🐍 ${(() => {
+                          if (!results.readme) return 'No languages detected';
+                          const extensions = ['.py', '.js', '.ts', '.jsx', '.tsx', '.java', '.cpp', '.c', '.go', '.rs', '.php', '.rb', '.swift', '.kt', '.scala', '.html', '.css', '.scss', '.sql', '.md', '.yml', '.json', '.xml', '.sh', '.bat', '.ps1'];
+                          const languages = new Set();
+                          extensions.forEach(ext => {
+                            if (results.readme.includes(ext)) {
+                              const langMap = { '.py': 'Python', '.js': 'JavaScript', '.ts': 'TypeScript', '.jsx': 'React', '.tsx': 'React TS', '.java': 'Java', '.cpp': 'C++', '.c': 'C', '.go': 'Go', '.rs': 'Rust', '.php': 'PHP', '.rb': 'Ruby', '.swift': 'Swift', '.kt': 'Kotlin', '.scala': 'Scala', '.html': 'HTML', '.css': 'CSS', '.scss': 'SCSS', '.sql': 'SQL', '.md': 'Markdown', '.yml': 'YAML', '.json': 'JSON', '.xml': 'XML', '.sh': 'Shell', '.bat': 'Batch', '.ps1': 'PowerShell' };
+                              languages.add(langMap[ext]);
+                            }
+                          });
+                          return languages.size > 0 ? `${languages.size} languages detected` : 'No languages detected';
+                        })()}`, 'success');
+                      }}
+                      className="stats-card group"
+                      aria-label="View language distribution details"
+                    >
+                      <div className="text-2xl md:text-3xl mb-2">🐍</div>
+                      <div className="text-lg md:text-xl font-bold text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
+                        {(() => {
+                          if (!results.readme) return '0';
+                          const extensions = ['.py', '.js', '.ts', '.jsx', '.tsx', '.java', '.cpp', '.c', '.go', '.rs', '.php', '.rb', '.swift', '.kt', '.scala', '.html', '.css', '.scss', '.sql', '.md', '.yml', '.json', '.xml', '.sh', '.bat', '.ps1'];
+                          const languages = new Set();
+                          extensions.forEach(ext => {
+                            if (results.readme.includes(ext)) {
+                              languages.add(ext);
+                            }
+                          });
+                          return languages.size;
+                        })()}
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Languages</div>
+                    </button>
+
+                    {/* Dependencies Stats */}
+                    <button
+                      onClick={() => {
+                        setActiveTab('requirements');
+                        showToast(`📦 ${(() => {
+                          if (!results.requirements || results.requirements.includes('No requirements')) return 'No dependencies found';
+                          const lines = results.requirements.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                          return lines.length > 0 ? `${lines.length} dependencies detected` : 'No dependencies found';
+                        })()}`, 'success');
+                      }}
+                      className="stats-card group"
+                      aria-label="View dependencies details"
+                    >
+                      <div className="text-2xl md:text-3xl mb-2">📦</div>
+                      <div className="text-lg md:text-xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                        {(() => {
+                          if (!results.requirements || results.requirements.includes('No requirements')) return '0';
+                          const lines = results.requirements.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+                          return lines.length;
+                        })()}
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Dependencies</div>
+                    </button>
+
+                    {/* Documents Stats */}
+                    <button
+                      onClick={() => {
+                        setActiveTab('documentation');
+                        showToast(`📚 ${(() => {
+                          let docCount = 0;
+                          if (results.documentation && !results.documentation.includes('No documentation')) docCount++;
+                          if (results.readme) docCount++;
+                          if (results.gitignore) docCount++;
+                          return docCount > 0 ? `${docCount} documents available` : 'No documents found';
+                        })()}`, 'success');
+                      }}
+                      className="stats-card group"
+                      aria-label="View documentation details"
+                    >
+                      <div className="text-2xl md:text-3xl mb-2">📚</div>
+                      <div className="text-lg md:text-xl font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                        {(() => {
+                          let docCount = 0;
+                          if (results.documentation && !results.documentation.includes('No documentation')) docCount++;
+                          if (results.readme) docCount++;
+                          if (results.gitignore) docCount++;
+                          return docCount;
+                        })()}
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Documents</div>
+                    </button>
                   </div>
+                </div>
+              )}
+              
+              {/* Input Section */}
+              <div className="max-w-2xl mx-auto">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                  <input
+                    type="url"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="Enter GitHub repository URL..."
+                    className="enhanced-input flex-1"
+                    aria-label="GitHub repository URL"
+                    aria-describedby="url-help"
+                  />
                   <button
                     onClick={handleAnalyze}
-                    disabled={loading || !url}
-                    className="enhanced-button w-full md:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl md:rounded-2xl hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl font-semibold flex items-center justify-center gap-3"
-                    aria-describedby="analyze-help"
+                    disabled={loading || !url.trim()}
+                    className="enhanced-button"
+                    aria-label={loading ? `Analyzing... ${loadingStage}` : 'Analyze repository'}
                   >
                     {loading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 md:h-5 w-4 md:w-5 border-b-2 border-white"></div>
-                        <span className="hidden sm:inline">
-                          {loadingStage || 'Analyzing...'}
-                        </span>
-                        <span className="sm:hidden">Analyzing...</span>
-                      </>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        {loadingStage || 'Analyzing...'}
+                      </div>
                     ) : (
-                      "🚀 Analyze Repository"
+                      '🚀 Analyze'
                     )}
                   </button>
-                  <p id="analyze-help" className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                    Click to start repository analysis
-                  </p>
                 </div>
+                <p id="url-help" className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  Example: https://github.com/username/repository
+                </p>
               </div>
             </div>
           </div>
@@ -1029,121 +1139,7 @@ export default function App() {
             </div>
           )}
           
-          {/* Repo Stats Cards */}
-          {Object.keys(results).length > 0 && (
-            <div className="mb-8">
-              <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
-                📊 Repository Overview
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                {/* Total Files */}
-                <div 
-                  className="stats-card bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-xl md:rounded-2xl p-3 md:p-4 text-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl"
-                  onClick={() => {
-                    const count = (() => {
-                      const readmeContent = results.readme || '';
-                      const lines = readmeContent.split('\n');
-                      let fileCount = 0;
-                      lines.forEach(line => {
-                        if (line.includes('├──') || line.includes('└──')) {
-                          fileCount++;
-                        }
-                      });
-                      return fileCount;
-                    })();
-                    showToast(`📁 Repository contains ${count} files and directories`, 'success');
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.click()}
-                  aria-label="Total files in repository"
-                >
-                  <div className="text-xl md:text-2xl mb-2">📁</div>
-                  <div className="text-base md:text-lg font-bold text-gray-900 dark:text-white">
-                    {(() => {
-                      const readmeContent = results.readme || '';
-                      const lines = readmeContent.split('\n');
-                      let fileCount = 0;
-                      lines.forEach(line => {
-                        if (line.includes('├──') || line.includes('└──')) {
-                          fileCount++;
-                        }
-                      });
-                      return fileCount;
-                    })()}
-                  </div>
-                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Total Files</div>
-                </div>
-                
-                {/* Languages */}
-                <div 
-                  className="stats-card bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-xl md:rounded-2xl p-3 md:p-4 text-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl"
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.click()}
-                  aria-label="Programming languages detected"
-                >
-                  <div className="text-xl md:text-2xl mb-2">🐍</div>
-                  <div className="text-base md:text-lg font-bold text-gray-900 dark:text-white">
-                    {(() => {
-                      const readmeContent = results.readme || '';
-                      const languages = new Set();
-                      if (readmeContent.includes('.py')) languages.add('Python');
-                      if (readmeContent.includes('.js')) languages.add('JavaScript');
-                      if (readmeContent.includes('.ts')) languages.add('TypeScript');
-                      if (readmeContent.includes('.java')) languages.add('Java');
-                      if (readmeContent.includes('.cpp')) languages.add('C++');
-                      if (readmeContent.includes('.go')) languages.add('Go');
-                      if (readmeContent.includes('.rs')) languages.add('Rust');
-                      return languages.size || 'Unknown';
-                    })()}
-                  </div>
-                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Languages</div>
-                </div>
-                
-                {/* Dependencies */}
-                <div 
-                  className="stats-card bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-xl md:rounded-2xl p-3 md:p-4 text-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl"
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.click()}
-                  aria-label="Python dependencies count"
-                >
-                  <div className="text-xl md:text-2xl mb-2">📦</div>
-                  <div className="text-base md:text-lg font-bold text-gray-900 dark:text-white">
-                    {(() => {
-                      const requirements = results.requirements || '';
-                      if (!requirements || requirements.includes('No requirements')) return 0;
-                      const lines = requirements.split('\n').filter(line => line.trim() && !line.startsWith('#'));
-                      return lines.length;
-                    })()}
-                  </div>
-                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Dependencies</div>
-                </div>
-                
-                {/* Documentation */}
-                <div 
-                  className="stats-card bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/50 rounded-xl md:rounded-2xl p-3 md:p-4 text-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl"
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.click()}
-                  aria-label="Documentation files count"
-                >
-                  <div className="text-xl md:text-2xl mb-2">📚</div>
-                  <div className="text-base md:text-lg font-bold text-gray-900 dark:text-white">
-                    {(() => {
-                      let docCount = 0;
-                      if (results.readme) docCount++;
-                      if (results.documentation) docCount++;
-                      if (results.gitignore) docCount++;
-                      return docCount;
-                    })()}
-                  </div>
-                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Documents</div>
-                </div>
-              </div>
-            </div>
-          )}
+
           
           {/* Tabbed Output */}
           <div className={`transition-all duration-1000 delay-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
