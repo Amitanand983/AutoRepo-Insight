@@ -3,6 +3,7 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import * as Tabs from "@radix-ui/react-tabs";
+import rehypeRaw from 'rehype-raw';
 
 const TABS = [
   { key: "readme", label: "📄 README.md", filename: "README.md" },
@@ -121,15 +122,12 @@ export default function App() {
               style={{ 
                 overflowY: 'auto', 
                 maxHeight: '60vh',
-                minHeight: '200px',
-                border: '1px solid rgba(147, 51, 234, 0.3)',
-                borderRadius: '8px',
-                padding: '16px'
+                minHeight: '200px'
               }}
             >
               {content ? (
                 <div className="readme-enhanced prose prose-gray dark:prose-invert max-w-none prose-headings:scroll-mt-16 prose-h1:text-3xl prose-h1:font-bold prose-h1:text-gray-900 prose-h1:dark:text-white prose-h1:border-b prose-h1:border-gray-200 prose-h1:dark:border-gray-700 prose-h1:pb-2 prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-semibold prose-h2:text-gray-800 prose-h2:dark:text-gray-200 prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-xl prose-h3:font-medium prose-h3:text-gray-700 prose-h3:dark:text-gray-300 prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-600 prose-p:dark:text-gray-400 prose-p:leading-relaxed prose-p:mb-3 prose-strong:text-gray-900 prose-strong:dark:text-white prose-strong:font-semibold prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:text-gray-800 prose-code:dark:text-gray-200 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-900 prose-pre:dark:bg-gray-950 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600 prose-blockquote:dark:text-gray-400 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:text-gray-600 prose-li:dark:text-gray-400 prose-li:mb-1 prose-hr:border-gray-300 prose-hr:dark:border-gray-600 prose-hr:my-6 prose-table:border-collapse prose-table:w-full prose-table:border prose-table:border-gray-300 prose-table:dark:border-gray-600 prose-th:bg-gray-100 prose-th:dark:bg-gray-800 prose-th:text-gray-900 prose-th:dark:text-white prose-th:font-semibold prose-th:p-3 prose-th:border prose-th:border-gray-300 prose-th:dark:border-gray-600 prose-td:p-3 prose-td:border prose-td:border-gray-300 prose-td:dark:border-gray-600 prose-td:text-gray-600 prose-td:dark:text-gray-400 prose-a:text-blue-600 prose-a:dark:text-blue-400 prose-a:no-underline prose-a:hover:underline prose-img:rounded-lg prose-img:shadow-md">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
                 </div>
               ) : (
                 <div className="text-center py-12">
@@ -161,7 +159,7 @@ export default function App() {
             <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
               {content ? (
                 <div className="prose prose-gray dark:prose-invert max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
                 </div>
               ) : (
                 <span className="text-gray-400">No documentation available.</span>
@@ -187,7 +185,7 @@ export default function App() {
             <div className="overflow-y-auto max-h-[60vh] pr-4 tab-content-scroll" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
               {content ? (
                 <div className="prose prose-gray dark:prose-invert max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
                 </div>
               ) : (
                 <span className="text-gray-400">No GPT summary available.</span>

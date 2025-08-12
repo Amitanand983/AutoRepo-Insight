@@ -137,118 +137,114 @@ html {
 }
 
 .readme-enhanced h1 {
-  font-size: 2em;
-  font-weight: 600;
-  margin-top: 24px;
-  margin-bottom: 16px;
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid #d0d7de;
-  color: #24292f;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
 }
 
 .readme-enhanced h2 {
-  font-size: 1.5em;
+  font-size: 1.875rem;
   font-weight: 600;
-  margin-top: 24px;
-  margin-bottom: 16px;
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid #d0d7de;
-  color: #24292f;
+  color: #1f2937;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .readme-enhanced h3 {
-  font-size: 1.25em;
-  font-weight: 600;
-  margin-top: 24px;
-  margin-bottom: 16px;
-  color: #24292f;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #374151;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .readme-enhanced p {
-  margin-top: 0;
-  margin-bottom: 16px;
-  color: #24292f;
+  color: #4b5563;
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+.readme-enhanced strong {
+  color: #111827;
+  font-weight: 600;
 }
 
 .readme-enhanced code {
-  padding: 0.2em 0.4em;
-  margin: 0;
-  font-size: 85%;
-  background-color: rgba(175, 184, 193, 0.2);
-  border-radius: 6px;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 }
 
 .readme-enhanced pre {
-  padding: 16px;
-  overflow: auto;
-  font-size: 85%;
-  line-height: 1.45;
-  background-color: #f6f8fa;
-  border-radius: 6px;
-  border: 1px solid #d0d7de;
-}
-
-.readme-enhanced pre code {
-  padding: 0;
-  margin: 0;
-  background-color: transparent;
-  border: 0;
-  font-size: 100%;
-  word-break: normal;
-  white-space: pre;
+  background-color: #111827;
+  color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1rem 0;
 }
 
 .readme-enhanced blockquote {
-  padding: 0 1em;
-  color: #656d76;
-  border-left: 0.25em solid #d0d7de;
-  margin: 0 0 16px 0;
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #4b5563;
+  margin: 1rem 0;
 }
 
-.readme-enhanced ul,
+.readme-enhanced ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.75rem 0;
+}
+
 .readme-enhanced ol {
-  margin-top: 0;
-  margin-bottom: 16px;
-  padding-left: 2em;
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.75rem 0;
 }
 
 .readme-enhanced li {
-  margin-top: 0.25em;
+  color: #4b5563;
+  margin-bottom: 0.25rem;
+}
+
+.readme-enhanced hr {
+  border: 0;
+  border-top: 1px solid #d1d5db;
+  margin: 1.5rem 0;
 }
 
 .readme-enhanced table {
-  border-spacing: 0;
   border-collapse: collapse;
-  margin-top: 0;
-  margin-bottom: 16px;
   width: 100%;
+  margin: 1rem 0;
 }
 
-.readme-enhanced table th,
-.readme-enhanced table td {
-  padding: 6px 13px;
-  border: 1px solid #d0d7de;
-}
-
-.readme-enhanced table th {
+.readme-enhanced th {
+  background-color: #f3f4f6;
+  color: #111827;
   font-weight: 600;
-  background-color: #f6f8fa;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  text-align: left;
 }
 
-.readme-enhanced table tr:nth-child(2n) {
-  background-color: #f6f8fa;
-}
-
-.readme-enhanced img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.readme-enhanced td {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  color: #4b5563;
 }
 
 .readme-enhanced a {
-  color: #0969da;
+  color: #2563eb;
   text-decoration: none;
 }
 
@@ -256,12 +252,43 @@ html {
   text-decoration: underline;
 }
 
-.readme-enhanced hr {
-  height: 0.25em;
-  padding: 0;
-  margin: 24px 0;
-  background-color: #d0d7de;
-  border: 0;
+.readme-enhanced img {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  height: auto;
+}
+
+/* HTML-specific styling for README content */
+.readme-enhanced div[align="center"] {
+  text-align: center;
+}
+
+.readme-enhanced div[align="center"] h1 {
+  text-align: center;
+  border-bottom: none;
+  margin-bottom: 0.5rem;
+}
+
+.readme-enhanced div[align="center"] p {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Badge styling */
+.readme-enhanced a[href*="img.shields.io"],
+.readme-enhanced a[href*="badge"],
+.readme-enhanced img[src*="badge"],
+.readme-enhanced img[src*="shields.io"] {
+  display: inline-block;
+  margin: 0.25rem;
+  vertical-align: middle;
+}
+
+/* Center badges container */
+.readme-enhanced div[align="center"] a {
+  display: inline-block;
+  margin: 0.25rem;
 }
 
 /* Dark mode support */
@@ -272,36 +299,40 @@ html {
   border-bottom-color: #30363d;
 }
 
-.dark .readme-enhanced p {
+.dark .readme-enhanced p,
+.dark .readme-enhanced li,
+.dark .readme-enhanced td {
   color: #c9d1d9;
 }
 
-.dark .readme-enhanced code {
-  background-color: rgba(110, 118, 129, 0.4);
+.dark .readme-enhanced strong {
   color: #f0f6fc;
 }
 
-.dark .readme-enhanced pre {
+.dark .readme-enhanced code {
   background-color: #21262d;
-  border-color: #30363d;
+  color: #c9d1d9;
+}
+
+.dark .readme-enhanced pre {
+  background-color: #0d1117;
+  color: #c9d1d9;
 }
 
 .dark .readme-enhanced blockquote {
   color: #8b949e;
-  border-left-color: #30363d;
+  border-left-color: #58a6ff;
 }
 
-.dark .readme-enhanced table th,
-.dark .readme-enhanced table td {
+.dark .readme-enhanced th {
+  background-color: #21262d;
+  color: #f0f6fc;
   border-color: #30363d;
 }
 
-.dark .readme-enhanced table th {
-  background-color: #21262d;
-}
-
-.dark .readme-enhanced table tr:nth-child(2n) {
-  background-color: #21262d;
+.dark .readme-enhanced td {
+  border-color: #30363d;
+  color: #c9d1d9;
 }
 
 .dark .readme-enhanced a {
@@ -309,5 +340,5 @@ html {
 }
 
 .dark .readme-enhanced hr {
-  background-color: #30363d;
+  border-top-color: #30363d;
 } 
