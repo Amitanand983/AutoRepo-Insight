@@ -33,4 +33,4 @@ npm run dev
 ---
 
 ## Folder Structure
-See code for details. 
+See code for the details. 
